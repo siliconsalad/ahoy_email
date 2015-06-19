@@ -3,23 +3,33 @@ module Ahoy
     before_filter :set_message
 
     def open
-      if @message && !@message.opened_at
-        @message.opened_at = Time.now
-        @message.save!
+      if @message
+        tracking = @message.trackings.build(kind: :open, opened_at: Time.now)
+        tracking.save!
       end
+
       publish :open
+
       send_data Base64.decode64("R0lGODlhAQABAPAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="), type: "image/gif", disposition: "inline"
     end
 
     def click
-      if @message && !@message.clicked_at
-        @message.clicked_at = Time.now
-        @message.opened_at ||= @message.clicked_at
-        @message.save!
+      if @message
+        tracking = @message.trackings.build(kind: :click, clicked_at: Time.now)
+
+        unless @message.trackings.opened.any?
+          open_tracking = @message.trackings.build(kind: :open, opened_at: tracking.clicked_at)
+          open_tracking.save!
+        end
+
+        tracking.save!
       end
-      url = params[:url].to_s
+
+      url       = params[:url].to_s
       signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new("sha1"), AhoyEmail.secret_token, url)
+
       publish :click, url: params[:url]
+
       if secure_compare(params[:signature], signature)
         redirect_to url
       else
@@ -36,8 +46,9 @@ module Ahoy
     def publish(name, event = {})
       AhoyEmail.subscribers.each do |subscriber|
         if subscriber.respond_to?(name)
-          event[:message] = @message
+          event[:message]    = @message
           event[:controller] = self
+
           subscriber.send name, event
         end
       end

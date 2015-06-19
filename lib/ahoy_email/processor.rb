@@ -11,6 +11,7 @@ module AhoyEmail
 
     def process
       action_name = mailer.action_name.to_sym
+
       if options[:message] && (!options[:only] || options[:only].include?(action_name)) && !options[:except].to_a.include?(action_name)
         @ahoy_message = AhoyEmail.message_model.new
         ahoy_message.token = generate_token
