@@ -10,6 +10,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
 
       # optional - feel free to remove
       t.string :mailer
+      t.string :mail_identifier
       t.text :subject
       t.text :content
 
@@ -20,13 +21,28 @@ class <%= migration_class_name %> < ActiveRecord::Migration
       # t.string :utm_content
       # t.string :utm_campaign
 
+      # reception status
+      t.string :email_status
+
       # timestamps
       t.timestamp :sent_at
-      t.timestamp :opened_at
-      t.timestamp :clicked_at
+      t.timestamps
     end
 
     add_index :ahoy_messages, [:token]
     add_index :ahoy_messages, [:user_id, :user_type]
+
+    create_table :ahoy_trackings do |t|
+      t.references :ahoy_message
+
+      t.string :kind
+      t.string :notification_kind
+      t.string :bounce_type
+      t.string :bounce_sub_type
+
+      # timestamps
+      t.timestamp :event_at
+      t.timestamps
+    end
   end
 end

@@ -11,6 +11,7 @@ module AhoyEmail
 
     def process
       action_name = mailer.action_name.to_sym
+
       if options[:message] && (!options[:only] || options[:only].include?(action_name)) && !options[:except].to_a.include?(action_name)
         @ahoy_message = AhoyEmail.message_model.new
         ahoy_message.token = generate_token
@@ -20,9 +21,10 @@ module AhoyEmail
         track_open if options[:open]
         track_links if options[:utm_params] || options[:click]
 
-        ahoy_message.mailer = options[:mailer] if ahoy_message.respond_to?(:mailer=)
-        ahoy_message.subject = message.subject if ahoy_message.respond_to?(:subject=)
-        ahoy_message.content = message.to_s if ahoy_message.respond_to?(:content=)
+        ahoy_message.mailer          = options[:mailer] if ahoy_message.respond_to?(:mailer=)
+        ahoy_message.subject         = message.subject if ahoy_message.respond_to?(:subject=)
+        ahoy_message.content         = message.to_s if ahoy_message.respond_to?(:content=)
+        ahoy_message.mail_identifier = options[:mail_identifier] if ahoy_message.respond_to?(:mail_identifier=)
 
         UTM_PARAMETERS.each do |k|
           ahoy_message.send("#{k}=", options[k.to_sym]) if ahoy_message.respond_to?("#{k}=")

@@ -8,5 +8,7 @@ AhoyEmail::Engine.routes.draw do
       get :open, on: :member
       get :click, on: :member
     end
+
+    post 'email_notification', to: 'aws_sns#email_notification', format: :json
   end
 end
