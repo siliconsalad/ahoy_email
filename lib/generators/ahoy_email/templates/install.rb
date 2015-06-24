@@ -10,6 +10,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
 
       # optional - feel free to remove
       t.string :mailer
+      t.string :mail_identifier
       t.text :subject
       t.text :content
 
@@ -40,9 +41,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
       t.string :bounce_sub_type
 
       # timestamps
-      t.timestamp :opened_at
-      t.timestamp :clicked_at
-      t.timestamp :notified_at
+      t.timestamp :event_at
       t.timestamps
     end
   end

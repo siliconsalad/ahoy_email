@@ -65,7 +65,7 @@ module Ahoy
           message.update_attributes(email_status: kind)
           tracking = message.trackings.build({
             kind: :sns_notification,
-            notified_at: delivery_time,
+            event_at: delivery_time,
             notification_kind: kind,
             bounce_type: bounce_type,
             bounce_sub_type: bounce_sub_type

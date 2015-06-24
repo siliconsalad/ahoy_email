@@ -4,7 +4,7 @@ module Ahoy
 
     def open
       if @message
-        tracking = @message.trackings.build(kind: :open, opened_at: Time.now)
+        tracking = @message.trackings.build(kind: :open, event_at: Time.now)
         tracking.save!
       end
 
@@ -15,10 +15,10 @@ module Ahoy
 
     def click
       if @message
-        tracking = @message.trackings.build(kind: :click, clicked_at: Time.now)
+        tracking = @message.trackings.build(kind: :click, event_at: Time.now)
 
         unless @message.trackings.opened.any?
-          open_tracking = @message.trackings.build(kind: :open, opened_at: tracking.clicked_at)
+          open_tracking = @message.trackings.build(kind: :open, event_at: tracking.event_at)
           open_tracking.save!
         end
 
