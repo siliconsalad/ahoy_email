@@ -218,12 +218,6 @@ Use a different model
 AhoyEmail.message_model = UserMessage
 ```
 
-## Upgrading
-
-### 0.2.3
-
-Optionally, you can store UTM parameters by adding `utm_source`, `utm_medium`, and `utm_campaign` columns to your message model.
-
 ## History
 
 View the [changelog](https://github.com/ankane/ahoy_email/blob/master/CHANGELOG.md)
